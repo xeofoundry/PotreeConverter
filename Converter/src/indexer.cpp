@@ -963,7 +963,7 @@ void buildHierarchy(Indexer* indexer, Node* node, shared_ptr<Buffer> points, int
 			i64 targetIndex = offsets[index]++;
 
 			if (targetIndex * bpp >= tmp->comittedCapacity) {
-				__debugbreak();
+				UNSUCK_DEBUG_BREAK();
 			}
 
 			memcpy(tmp->ptr + targetIndex * bpp, points->data_u8 + i * bpp, bpp);
@@ -1298,7 +1298,7 @@ void load_stage_chunkroots(
 	*totalBytes = js["totalBytes"];
 	*pointsProcessed = js["pointsProcessed"];
 
-	state->name = js["state"]["name"];
+	state->name = js["state"]["name"].get<std::string>();
 	state->pointsTotal = i64(js["state"]["pointsTotal"]);
 	state->pointsProcessed = i64(js["state"]["pointsProcessed"]);
 	state->bytesProcessed = i64(js["state"]["bytesProcessed"]);
@@ -1316,7 +1316,7 @@ void load_stage_chunkroots(
 		AttributeType type = typenameToType(jsAttribute["type"]);
 
 		Attribute attribute(name, size, numElements, elementSize, type);
-		attribute.description = jsAttribute["description"];
+		attribute.description = jsAttribute["description"].get<std::string>();
 		attribute.min = jsToVec3(jsAttribute["min"], Infinity);
 		attribute.max = jsToVec3(jsAttribute["max"], -Infinity);
 		attribute.scale = jsToVec3(jsAttribute["scale"], 1.0);
@@ -1397,8 +1397,8 @@ void load_stage_chunkroots(
 	chunks->attributes = attributes;
 	for(auto& jsChunk : js["chunks"]["list"]){
 		auto chunk = make_shared<Chunk>();
-		chunk->id = jsChunk["id"];
-		chunk->file = jsChunk["file"];
+		chunk->id = jsChunk["id"].get<std::string>();
+		chunk->file = jsChunk["file"].get<std::string>();
 
 		auto box = boundsOf(chunk->id);
 		chunk->min = box.min;

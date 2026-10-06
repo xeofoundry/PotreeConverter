@@ -56,6 +56,12 @@ constexpr auto fseek_64_all_platforms = fseeko64;
 constexpr auto fseek_64_all_platforms = _fseeki64;
 #endif
 
+#if defined(_MSC_VER)
+#define UNSUCK_DEBUG_BREAK() __debugbreak()
+#else
+#define UNSUCK_DEBUG_BREAK() __builtin_trap()
+#endif
+
 
 struct MemoryData {
 	size_t virtual_total = 0;
