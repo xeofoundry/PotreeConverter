@@ -1,6 +1,6 @@
 # Build runbook
 
-Scope: native `linux-x64` and `linux-arm64` builds. `win-x64` is deferred. The decision record lives under `.scratch/custom-builds/`.
+Scope: native `linux-x64`, `linux-arm64`, and `win-x64` builds. The decision record lives under `.scratch/custom-builds/`. All three targets are verified by the CI workflow at `.github/workflows/ci.yml`.
 
 ## Prerequisites
 
@@ -11,6 +11,15 @@ Ubuntu 24.04 LTS host with:
 - `libtbb-dev`
 - `cmake` (>= 3.16)
 - `python3`
+- `git`
+
+Windows x64 host with:
+
+- Windows 10 SDK (10.0.17763+) or newer
+- Visual Studio 2022 17.7+ Build Tools with the MSVC v143 toolset
+- `clang-cl` (LLVM 16+, or the Visual Studio ClangCL toolset)
+- `cmake` (>= 3.16)
+- `ninja`
 - `git`
 
 ## Source delta
@@ -29,7 +38,11 @@ The build requires the C++23 source fixes listed in `.xeofoundry/SOURCE-DELTAS.m
 .xeofoundry/build.sh linux-x64 -DPOTREE_CONVERTER_VERSION=v2.1.7
 ```
 
-Each platform target builds into its own directory. A platform target that does not match `uname -m` is refused.
+```powershell
+.\.xeofoundry\build.ps1 -PlatformTarget win-x64 -Clean
+```
+
+Each platform target builds into its own directory. A platform target that does not match the host architecture is refused.
 
 ## Smoke test
 
@@ -38,6 +51,11 @@ Run from the target's build output directory:
 ```sh
 cd .xeofoundry/build/linux-x64
 ../../../.xeofoundry/test/smoke.sh ../../../Converter/libs/laszip/example
+```
+
+```powershell
+cd .xeofoundry\build\win-x64
+..\..\..\.xeofoundry\test\smoke.ps1 -FixtureFolder ..\..\..\Converter\libs\laszip\example
 ```
 
 The script converts every `.las`/`.laz` in the given folder under `UNCOMPRESSED` and `BROTLI` and checks the output metadata. The converter anchors the output bounding box at the fixture header minimum and expands it to a cube whose side is the largest header extent; the smoke check asserts that expansion within one quantization step. Results are written under `.xeofoundry/test/result/` (gitignored), wiped at the start of each run.
@@ -78,7 +96,7 @@ Each platform target's build directory is self-contained:
 
 ```text
 .xeofoundry/build/<platform-target>/
-├── PotreeConverter
+├── PotreeConverter[.exe]
 ├── VERSION
 ├── resources/page_template
 ├── licenses/

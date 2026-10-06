@@ -1,0 +1,94 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - 'feat-ci/*'
+
+jobs:
+  windows-x64:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install prerequisites
+        shell: pwsh
+        run: |
+          $missing = @()
+          foreach ($tool in @("clang-cl", "cmake", "ninja")) {
+            if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) {
+              $missing += $tool
+            }
+          }
+          if ($missing.Count -gt 0) {
+            choco install llvm ninja cmake -y --no-progress
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+          }
+          clang-cl --version
+          cmake --version
+          ninja --version
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Build
+        shell: pwsh
+        run: .\.xeofoundry\build.ps1 -PlatformTarget win-x64 -Clean
+      - name: Smoke test
+        shell: pwsh
+        working-directory: .xeofoundry/build/win-x64
+        run: ..\..\..\.xeofoundry\test\smoke.ps1 -FixtureFolder ..\..\..\Converter\libs\laszip\example
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-x64
+          path: |
+            .xeofoundry/build/win-x64/PotreeConverter.exe
+            .xeofoundry/build/win-x64/VERSION
+          if-no-files-found: error
+
+  linux-x64:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang libstdc++-14-dev libtbb-dev cmake python3 git
+          clang++ --version
+          cmake --version
+          python3 --version
+      - name: Build
+        run: .xeofoundry/build.sh linux-x64 --clean
+      - name: Smoke test
+        working-directory: .xeofoundry/build/linux-x64
+        run: ../../../.xeofoundry/test/smoke.sh ../../../Converter/libs/laszip/example
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64
+          path: |
+            .xeofoundry/build/linux-x64/PotreeConverter
+            .xeofoundry/build/linux-x64/VERSION
+          if-no-files-found: error
+
+  linux-arm64:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang libstdc++-14-dev libtbb-dev cmake python3 git
+          clang++ --version
+          cmake --version
+          python3 --version
+      - name: Build
+        run: .xeofoundry/build.sh linux-arm64 --clean
+      - name: Smoke test
+        working-directory: .xeofoundry/build/linux-arm64
+        run: ../../../.xeofoundry/test/smoke.sh ../../../Converter/libs/laszip/example
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-arm64
+          path: |
+            .xeofoundry/build/linux-arm64/PotreeConverter
+            .xeofoundry/build/linux-arm64/VERSION
+          if-no-files-found: error

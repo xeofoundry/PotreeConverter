@@ -71,6 +71,10 @@ if (NOT WIN32)
 	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 		target_compile_options(PotreeConverter PRIVATE -stdlib=libstdc++ -Wno-c++11-narrowing)
 	endif()
+else()
+	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+		target_compile_options(PotreeConverter PRIVATE -Wno-c++11-narrowing)
+	endif()
 endif()
 
 add_custom_command(
