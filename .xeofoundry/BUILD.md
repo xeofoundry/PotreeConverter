@@ -40,7 +40,7 @@ cd .xeofoundry/build/linux-x64
 ../../../.xeofoundry/test/smoke.sh ../../../Converter/libs/laszip/example
 ```
 
-The script converts every `.las`/`.laz` in the given folder under `UNCOMPRESSED` and `BROTLI` and checks the output metadata. The converter anchors the output bounding box at the fixture header minimum and expands it to a cube whose side is the largest header extent; the smoke check asserts that expansion within one quantization step.
+The script converts every `.las`/`.laz` in the given folder under `UNCOMPRESSED` and `BROTLI` and checks the output metadata. The converter anchors the output bounding box at the fixture header minimum and expands it to a cube whose side is the largest header extent; the smoke check asserts that expansion within one quantization step. Results are written under `.xeofoundry/test/result/` (gitignored), wiped at the start of each run.
 
 ## Outputs
 

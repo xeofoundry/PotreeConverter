@@ -19,8 +19,10 @@ if [[ ! -x "$CONVERTER" ]]; then
 	exit 1
 fi
 
-TMP_ROOT="$(mktemp -d)"
-trap 'rm -rf "$TMP_ROOT"' EXIT
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+RESULT_ROOT="$SCRIPT_DIR/result"
+rm -rf "$RESULT_ROOT"
+mkdir -p "$RESULT_ROOT"
 
 shopt -s nullglob nocaseglob
 FIXTURES=("$FIXTURE_DIR"/*.las "$FIXTURE_DIR"/*.laz)
@@ -35,7 +37,7 @@ for fixture in "${FIXTURES[@]}"; do
 	name="$(basename "$fixture")"
 
 	for encoding in UNCOMPRESSED BROTLI; do
-		outdir="$TMP_ROOT/${name}-${encoding}"
+		outdir="$RESULT_ROOT/${name}-${encoding}"
 		mkdir -p "$outdir"
 
 		echo "smoke: $name ($encoding)"
@@ -125,3 +127,4 @@ PY
 done
 
 echo "smoke: all conversions passed"
+echo "smoke: results in $RESULT_ROOT"
