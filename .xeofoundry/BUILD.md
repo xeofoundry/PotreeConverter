@@ -42,6 +42,36 @@ cd .xeofoundry/build/linux-x64
 
 The script converts every `.las`/`.laz` in the given folder under `UNCOMPRESSED` and `BROTLI` and checks the output metadata. The converter anchors the output bounding box at the fixture header minimum and expands it to a cube whose side is the largest header extent; the smoke check asserts that expansion within one quantization step. Results are written under `.xeofoundry/test/result/` (gitignored), wiped at the start of each run.
 
+## Preview
+
+Generate a Potree viewer page for a fixture. Run from the target's build output directory:
+
+```sh
+cd .xeofoundry/build/linux-x64
+../../../.xeofoundry/test/preview.sh ../../../Converter/libs/laszip/example/5points_14.las demo
+```
+
+The script runs the converter with `--generate-page` and writes a self-contained page next to the dataset under `.xeofoundry/test/result/preview/<page-name>/` (gitignored):
+
+```text
+.xeofoundry/test/result/preview/<page-name>/
+├── <page-name>.html
+├── libs/
+└── pointclouds/<page-name>/
+    ├── metadata.json
+    ├── hierarchy.bin
+    └── octree.bin
+```
+
+The page is generated from the `resources/page_template` copied beside the built executable. Browsers block loading `metadata.json` over `file://`, so serve the directory over HTTP:
+
+```sh
+cd .xeofoundry/test/result/preview/<page-name>
+python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000/<page-name>.html`. The converter's `--title` option is currently unused by the page template, so the page keeps the template title.
+
 ## Outputs
 
 Each platform target's build directory is self-contained:
