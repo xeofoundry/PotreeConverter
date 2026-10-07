@@ -36,7 +36,7 @@ using std::println;
 
 namespace fs = std::filesystem;
 
-static long long unsuck_start_time = high_resolution_clock::now().time_since_epoch().count();
+static long long helpers_start_time = high_resolution_clock::now().time_since_epoch().count();
 
 static double Infinity = std::numeric_limits<double>::infinity();
 
@@ -51,15 +51,19 @@ using u8  =  uint8_t;
 
 
 #if defined(__linux__)
-constexpr auto fseek_64_all_platforms = fseeko64;
+inline int fseek_64_all_platforms(FILE* file, int64_t offset, int origin) {
+	return fseeko64(file, offset, origin);
+}
 #elif defined(WIN32)
-constexpr auto fseek_64_all_platforms = _fseeki64;
+inline int fseek_64_all_platforms(FILE* file, int64_t offset, int origin) {
+	return _fseeki64(file, offset, origin);
+}
 #endif
 
 #if defined(_MSC_VER)
-#define UNSUCK_DEBUG_BREAK() __debugbreak()
+#define HELPERS_DEBUG_BREAK() __debugbreak()
 #else
-#define UNSUCK_DEBUG_BREAK() __builtin_trap()
+#define HELPERS_DEBUG_BREAK() __builtin_trap()
 #endif
 
 
@@ -212,7 +216,7 @@ struct Buffer {
 
 inline double now() {
 	auto now = std::chrono::high_resolution_clock::now();
-	long long nanosSinceStart = now.time_since_epoch().count() - unsuck_start_time;
+	long long nanosSinceStart = now.time_since_epoch().count() - helpers_start_time;
 
 	double secondsSinceStart = double(nanosSinceStart) / 1'000'000'000.0;
 

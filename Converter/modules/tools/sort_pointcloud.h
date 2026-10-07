@@ -3,7 +3,7 @@
 
 #include "laszip/laszip_api.h"
 
-#include "unsuck/unsuck.hpp"
+#include "helpers/helpers.hpp"
 #include "Vector3.h"
 
 using std::string;

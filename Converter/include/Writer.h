@@ -7,7 +7,7 @@
 #include "brotli/encode.h"
 #include "brotli/decode.h"
 
-#include "unsuck/unsuck.hpp"
+#include "helpers/helpers.hpp"
 #include "VBuffer.h"
 #include "logger.h"
 

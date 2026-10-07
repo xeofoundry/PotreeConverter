@@ -6,7 +6,7 @@ on:
       - 'feat-ci/*'
 
 jobs:
-  windows-x64:
+  win-x64:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -14,19 +14,17 @@ jobs:
         shell: pwsh
         run: |
           $missing = @()
-          foreach ($tool in @("clang-cl", "cmake", "ninja")) {
+          foreach ($tool in @("clang-cl", "cmake")) {
             if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) {
               $missing += $tool
             }
           }
           if ($missing.Count -gt 0) {
-            choco install llvm ninja cmake -y --no-progress
+            choco install llvm cmake -y --no-progress
             $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
           }
           clang-cl --version
           cmake --version
-          ninja --version
-      - uses: ilammy/msvc-dev-cmd@v1
       - name: Build
         shell: pwsh
         run: .\.xeofoundry\build.ps1 -PlatformTarget win-x64 -Clean

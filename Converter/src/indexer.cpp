@@ -963,7 +963,7 @@ void buildHierarchy(Indexer* indexer, Node* node, shared_ptr<Buffer> points, int
 			i64 targetIndex = offsets[index]++;
 
 			if (targetIndex * bpp >= tmp->comittedCapacity) {
-				UNSUCK_DEBUG_BREAK();
+				HELPERS_DEBUG_BREAK();
 			}
 
 			memcpy(tmp->ptr + targetIndex * bpp, points->data_u8 + i * bpp, bpp);

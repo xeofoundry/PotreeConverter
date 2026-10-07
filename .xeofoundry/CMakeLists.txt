@@ -27,7 +27,7 @@ set(HEADER_FILES
 	${REPO_ROOT}/Converter/include/PotreeConverter.h
 	${REPO_ROOT}/Converter/include/logger.h
 	${REPO_ROOT}/Converter/modules/LasLoader/LasLoader.h
-	${REPO_ROOT}/Converter/modules/unsuck/unsuck.hpp
+	${REPO_ROOT}/Converter/modules/helpers/helpers.hpp
 )
 
 add_executable(PotreeConverter
@@ -38,7 +38,7 @@ add_executable(PotreeConverter
 	${REPO_ROOT}/Converter/src/VBuffer.cpp
 	${REPO_ROOT}/Converter/src/Writer.cpp
 	${REPO_ROOT}/Converter/modules/LasLoader/LasLoader.cpp
-	${REPO_ROOT}/Converter/modules/unsuck/unsuck_platform_specific.cpp
+	${REPO_ROOT}/Converter/modules/helpers/helpers_platform_specific.cpp
 	${HEADER_FILES}
 )
 

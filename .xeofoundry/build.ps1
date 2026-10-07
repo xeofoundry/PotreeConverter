@@ -29,6 +29,30 @@ if ($HostArch -ne $ExpectedArch) {
 	exit 1
 }
 
+$vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio/Installer/vswhere.exe"
+if (-not (Test-Path -LiteralPath $vswhere)) {
+	Write-Error "vswhere not found; install Visual Studio with the C++ build tools"
+	exit 1
+}
+
+$vsInstall = & $vswhere -latest -products "*" -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+if (-not $vsInstall) {
+	Write-Error "no Visual Studio installation with the C++ build tools found"
+	exit 1
+}
+
+$vcvars = Join-Path $vsInstall "VC/Auxiliary/Build/vcvars64.bat"
+if (-not (Test-Path -LiteralPath $vcvars)) {
+	Write-Error "vcvars64.bat not found at $vcvars"
+	exit 1
+}
+
+& cmd.exe /c "`"$vcvars`" >nul 2>&1 && set" | ForEach-Object {
+	if ($_ -match "^([^=]+)=(.*)$") {
+		Set-Item -Path "Env:$($matches[1])" -Value $matches[2]
+	}
+}
+
 $BuildDir = Join-Path $ScriptDir "build/$PlatformTarget"
 
 if ($Clean -and (Test-Path -LiteralPath $BuildDir)) {
@@ -38,7 +62,7 @@ if ($Clean -and (Test-Path -LiteralPath $BuildDir)) {
 $configureArgs = @(
 	"-S", $ScriptDir,
 	"-B", $BuildDir,
-	"-G", "Ninja",
+	"-G", "NMake Makefiles",
 	"-DCMAKE_C_COMPILER=clang-cl",
 	"-DCMAKE_CXX_COMPILER=clang-cl"
 )

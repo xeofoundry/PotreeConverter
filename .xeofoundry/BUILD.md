@@ -1,6 +1,6 @@
 # Build runbook
 
-Scope: native `linux-x64`, `linux-arm64`, and `win-x64` builds. The decision record lives under `.scratch/custom-builds/`. All three targets are verified by the CI workflow at `.github/workflows/ci.yml`.
+Scope: native `linux-x64`, `linux-arm64`, and `win-x64` builds. All three targets are verified by the CI workflow at `.github/workflows/ci.yml`.
 
 ## Prerequisites
 
@@ -19,7 +19,6 @@ Windows x64 host with:
 - Visual Studio 2022 17.7+ Build Tools with the MSVC v143 toolset
 - `clang-cl` (LLVM 16+, or the Visual Studio ClangCL toolset)
 - `cmake` (>= 3.16)
-- `ninja`
 - `git`
 
 ## Source delta
@@ -41,6 +40,8 @@ The build requires the C++23 source fixes listed in `.xeofoundry/SOURCE-DELTAS.m
 ```powershell
 .\.xeofoundry\build.ps1 -PlatformTarget win-x64 -Clean
 ```
+
+`build.ps1` imports the Visual Studio environment itself, so it does not need to be run from a developer prompt. It configures CMake with the `NMake Makefiles` generator and `clang-cl`.
 
 Each platform target builds into its own directory. A platform target that does not match the host architecture is refused.
 
