@@ -1,0 +1,8 @@
+# custom builds
+build
+
+# models for testing
+datasets
+
+# place where converter output can be directed
+results

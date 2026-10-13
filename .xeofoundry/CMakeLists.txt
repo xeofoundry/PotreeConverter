@@ -63,10 +63,14 @@ target_include_directories(PotreeConverter PRIVATE "${REPO_ROOT}/Converter/libs"
 
 if (NOT WIN32)
 	find_package(Threads REQUIRED)
-	find_package(TBB REQUIRED)
+	find_package(TBB QUIET)
 
 	target_link_libraries(PotreeConverter Threads::Threads)
-	target_link_libraries(PotreeConverter TBB::tbb)
+	if (TBB_FOUND)
+		target_link_libraries(PotreeConverter TBB::tbb)
+	else()
+		message(WARNING "TBB not found: std::execution parallel policies fall back to the serial backend. Install libtbb-dev for parallel conversions.")
+	endif()
 
 	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 		target_compile_options(PotreeConverter PRIVATE -stdlib=libstdc++ -Wno-c++11-narrowing)

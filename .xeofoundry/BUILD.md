@@ -8,7 +8,7 @@ Ubuntu 24.04 LTS host with:
 
 - `clang`
 - `libstdc++-14-dev`
-- `libtbb-dev`
+- `libtbb-dev` (optional; without it the parallel execution policies run on the serial backend)
 - `cmake` (>= 3.16)
 - `python3`
 - `git`
