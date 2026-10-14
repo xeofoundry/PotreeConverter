@@ -12,6 +12,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RootDir = Split-Path -Parent $ScriptDir
 
 switch ($PlatformTarget) {
 	"win-x64" {
@@ -53,14 +54,14 @@ if (-not (Test-Path -LiteralPath $vcvars)) {
 	}
 }
 
-$BuildDir = Join-Path $ScriptDir "build/$PlatformTarget"
+$BuildDir = Join-Path $RootDir "build/$PlatformTarget"
 
 if ($Clean -and (Test-Path -LiteralPath $BuildDir)) {
 	Remove-Item -LiteralPath $BuildDir -Recurse -Force
 }
 
 $configureArgs = @(
-	"-S", $ScriptDir,
+	"-S", $RootDir,
 	"-B", $BuildDir,
 	"-G", "NMake Makefiles",
 	"-DCMAKE_C_COMPILER=clang-cl",

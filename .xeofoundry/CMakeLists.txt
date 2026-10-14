@@ -9,7 +9,7 @@ set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 
 get_filename_component(REPO_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
 
-set(POTREE_CONVERTER_VERSION "v2.1.6" CACHE STRING "Release version stamped beside the built executable")
+set(POTREE_CONVERTER_VERSION "v2.1.5" CACHE STRING "Release version stamped beside the built executable")
 file(WRITE "${CMAKE_BINARY_DIR}/VERSION" "${POTREE_CONVERTER_VERSION}\n")
 
 set(HEADER_FILES

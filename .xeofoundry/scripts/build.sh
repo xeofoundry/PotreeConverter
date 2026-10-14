@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 PLATFORM_TARGET=""
 CLEAN=0
@@ -49,7 +50,7 @@ if [[ "$HOST_ARCH" != "$EXPECTED_ARCH" ]]; then
 	exit 1
 fi
 
-BUILD_DIR="$SCRIPT_DIR/build/$PLATFORM_TARGET"
+BUILD_DIR="$ROOT_DIR/build/$PLATFORM_TARGET"
 
 if [[ "$CLEAN" -eq 1 ]]; then
 	rm -rf "$BUILD_DIR"
@@ -58,5 +59,5 @@ fi
 export CC="${CC:-clang}"
 export CXX="${CXX:-clang++}"
 
-cmake -S "$SCRIPT_DIR" -B "$BUILD_DIR" "${CMAKE_ARGS[@]}"
+cmake -S "$ROOT_DIR" -B "$BUILD_DIR" "${CMAKE_ARGS[@]}"
 cmake --build "$BUILD_DIR" --config Release

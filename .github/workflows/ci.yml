@@ -27,18 +27,22 @@ jobs:
           cmake --version
       - name: Build
         shell: pwsh
-        run: .\.xeofoundry\build.ps1 -PlatformTarget win-x64 -Clean
+        run: .\.xeofoundry\scripts\build.ps1 -PlatformTarget win-x64 -Clean
       - name: Smoke test
         shell: pwsh
         working-directory: .xeofoundry/build/win-x64
-        run: ..\..\..\.xeofoundry\test\smoke.ps1 -FixtureFolder ..\..\..\Converter\libs\laszip\example
+        run: ..\..\scripts\test\smoke.ps1 -FixtureFolder ..\..\..\Converter\libs\laszip\example
+      - name: Collect release files
+        shell: pwsh
+        run: .\.xeofoundry\scripts\collect.ps1 -PlatformTarget win-x64 -Clean
+      - name: Archive release
+        shell: pwsh
+        run: .\.xeofoundry\scripts\archive.ps1 -PlatformTarget win-x64
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: win-x64
-          path: |
-            .xeofoundry/build/win-x64/PotreeConverter.exe
-            .xeofoundry/build/win-x64/VERSION
+          path: .xeofoundry/.release/PotreeConverter_*_win-x64.zip
           if-no-files-found: error
 
   linux-x64:
@@ -53,17 +57,19 @@ jobs:
           cmake --version
           python3 --version
       - name: Build
-        run: .xeofoundry/build.sh linux-x64 --clean
+        run: .xeofoundry/scripts/build.sh linux-x64 --clean
       - name: Smoke test
         working-directory: .xeofoundry/build/linux-x64
-        run: ../../../.xeofoundry/test/smoke.sh ../../../Converter/libs/laszip/example
+        run: ../../scripts/test/smoke.sh ../../../Converter/libs/laszip/example
+      - name: Collect release files
+        run: .xeofoundry/scripts/collect.sh linux-x64 --clean
+      - name: Archive release
+        run: .xeofoundry/scripts/archive.sh linux-x64
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-x64
-          path: |
-            .xeofoundry/build/linux-x64/PotreeConverter
-            .xeofoundry/build/linux-x64/VERSION
+          path: .xeofoundry/.release/PotreeConverter_*_linux-x64.tar.gz
           if-no-files-found: error
 
   linux-arm64:
@@ -78,15 +84,17 @@ jobs:
           cmake --version
           python3 --version
       - name: Build
-        run: .xeofoundry/build.sh linux-arm64 --clean
+        run: .xeofoundry/scripts/build.sh linux-arm64 --clean
       - name: Smoke test
         working-directory: .xeofoundry/build/linux-arm64
-        run: ../../../.xeofoundry/test/smoke.sh ../../../Converter/libs/laszip/example
+        run: ../../scripts/test/smoke.sh ../../../Converter/libs/laszip/example
+      - name: Collect release files
+        run: .xeofoundry/scripts/collect.sh linux-arm64 --clean
+      - name: Archive release
+        run: .xeofoundry/scripts/archive.sh linux-arm64
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-arm64
-          path: |
-            .xeofoundry/build/linux-arm64/PotreeConverter
-            .xeofoundry/build/linux-arm64/VERSION
+          path: .xeofoundry/.release/PotreeConverter_*_linux-arm64.tar.gz
           if-no-files-found: error

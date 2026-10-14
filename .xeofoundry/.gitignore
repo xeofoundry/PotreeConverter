@@ -6,3 +6,6 @@ datasets
 
 # place where converter output can be directed
 results
+
+# collected release files
+.release
