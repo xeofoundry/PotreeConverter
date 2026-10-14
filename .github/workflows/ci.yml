@@ -43,6 +43,7 @@ jobs:
         with:
           name: win-x64
           path: .xeofoundry/.release/PotreeConverter_*_win-x64.zip
+          include-hidden-files: true
           if-no-files-found: error
 
   linux-x64:
@@ -70,6 +71,7 @@ jobs:
         with:
           name: linux-x64
           path: .xeofoundry/.release/PotreeConverter_*_linux-x64.tar.gz
+          include-hidden-files: true
           if-no-files-found: error
 
   linux-arm64:
@@ -97,4 +99,5 @@ jobs:
         with:
           name: linux-arm64
           path: .xeofoundry/.release/PotreeConverter_*_linux-arm64.tar.gz
+          include-hidden-files: true
           if-no-files-found: error
